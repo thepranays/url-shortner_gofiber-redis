@@ -17,7 +17,10 @@ func ResolveURL(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"Error": "Cannot connect to database service"})
 
 	}
-	//TODO:increment limit counter of url
+	//Increment counter (no. of resolves)
+	resolveInr := database.CreateClient(1)
+	defer resolveInr.Close()
+	_ = resolveInr.Incr(database.Ctx, "counter")
 
 	return ctx.Redirect(value, 301)
 }
